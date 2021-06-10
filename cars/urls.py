@@ -4,4 +4,5 @@ from cars import views
 
 urlpatterns = [
     path('cars/', views.CreateCar.as_view(), name='car-create'),
+    path('cars/<int:pk>/', views.DeleteCar.as_view(), name='car-delete'),
 ]

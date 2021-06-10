@@ -1,6 +1,6 @@
 import requests
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.response import Response
 
 from cars.models import CarModel, CarMake
@@ -41,3 +41,8 @@ class CreateCar(CreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteCar(DestroyAPIView):
+    queryset = CarModel.objects.all()
+    serializer_class = CarSerializer
