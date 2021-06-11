@@ -3,8 +3,8 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework.response import Response
 
-from cars.models import CarModel, CarMake
-from cars.serializers import CarSerializer
+from cars.models import CarModel, CarMake, CarRate
+from cars.serializers import CarSerializer, RateCarSerializer
 
 
 class CreateCar(CreateAPIView):
@@ -46,3 +46,27 @@ class CreateCar(CreateAPIView):
 class DeleteCar(DestroyAPIView):
     queryset = CarModel.objects.all()
     serializer_class = CarSerializer
+
+
+class RateCar(CreateAPIView):
+    queryset = CarRate.objects.all()
+    serializer_class = RateCarSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = RateCarSerializer(data=request.data)
+
+        if serializer.is_valid():
+            car = CarModel.objects.filter(id=request.data['car_id']).first()
+
+            if car:
+                CarRate.objects.create(car_id=car, rating=request.data['rating'])
+                car.rates_number += 1
+                all_rates = [rate.rating for rate in car.car_rate.all()]
+                car.avg_rating = sum(all_rates) / car.rates_number
+                car.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(f'No such car id ({request.data["car_id"]}) in database',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
