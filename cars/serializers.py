@@ -20,3 +20,12 @@ class RateCarSerializer(serializers.ModelSerializer):
         model = CarRate
         fields = ('id', 'car_id', 'rating')
         depth = 1
+
+
+class PopularCarSerializer(serializers.ModelSerializer):
+    make = serializers.CharField(source='make.make')
+
+    class Meta:
+        model = CarModel
+        fields = ('id', 'make', 'model', 'rates_number')
+        depth = 1

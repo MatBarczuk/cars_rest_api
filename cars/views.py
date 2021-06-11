@@ -1,13 +1,13 @@
 import requests
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView, ListCreateAPIView, ListAPIView
 from rest_framework.response import Response
 
 from cars.models import CarModel, CarMake, CarRate
-from cars.serializers import CarSerializer, RateCarSerializer
+from cars.serializers import CarSerializer, RateCarSerializer, PopularCarSerializer
 
 
-class CreateCar(CreateAPIView):
+class ListCreateCar(ListCreateAPIView):
     queryset = CarModel.objects.all()
     serializer_class = CarSerializer
 
@@ -70,3 +70,8 @@ class RateCar(CreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PopularCar(ListAPIView):
+    queryset = CarModel.objects.all().order_by('-rates_number')
+    serializer_class = PopularCarSerializer
