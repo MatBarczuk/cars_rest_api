@@ -14,7 +14,7 @@ class CarSerializer(serializers.ModelSerializer):
 
 
 class RateCarSerializer(serializers.ModelSerializer):
-    car_id = serializers.IntegerField(source='car.id', required=True)
+    car_id = serializers.IntegerField(source='car_id.id', required=True)
 
     class Meta:
         model = CarRate

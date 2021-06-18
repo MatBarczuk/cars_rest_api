@@ -26,6 +26,30 @@ class CarSerializerTest(TestCase):
         self.assertEqual(self.data['avg_rating'], self.car_model.avg_rating)
 
 
+class RateCarSerializerTest(TestCase):
+
+    def setUp(self):
+        self.car_make = CarMake.objects.create(
+            make='test make'
+        )
+        self.car_model = CarModel.objects.create(
+            make=self.car_make,
+            model='test model'
+        )
+        self.car_rate = CarRate.objects.create(
+            car_id=self.car_model,
+            rating=3
+        )
+        self.data = RateCarSerializer(instance=self.car_rate).data
+
+    def test_fields(self):
+        self.assertEqual(self.data.keys(), {'id', 'car_id', 'rating'})
+
+    def test_expected_values(self):
+        self.assertEqual(self.data['car_id'], self.car_rate.car_id.id)
+        self.assertEqual(self.data['rating'], self.car_rate.rating)
+
+
 class PopularCarSerializerTest(TestCase):
 
     def setUp(self):
